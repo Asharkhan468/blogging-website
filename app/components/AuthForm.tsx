@@ -1,4 +1,3 @@
-// components/AuthForm.tsx
 "use client";
 import React, { useState } from "react";
 
@@ -17,10 +16,11 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-2">
+      {/* Email */}
       <div>
-        <label className="block text-gray-700 text-sm font-medium mb-1">
-          Email
+        <label className="block text-gray-700 text-sm font-semibold mb-2">
+          Email Address
         </label>
         <input
           type="email"
@@ -28,29 +28,35 @@ export default function AuthForm({ type, onSubmit }: AuthFormProps) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           required
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 rounded-xl border text-gray-900 placeholder-gray-400 
+                      transition-colors duration-200"
         />
       </div>
 
+      {/* Password */}
       <div>
-        <label className="block text-gray-700 text-sm font-medium mb-1">
+        <label className="block text-gray-700 text-sm font-semibold mb-2">
           Password
         </label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
+          placeholder="Password"
           required
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-900 placeholder-gray-400 
+                     focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition-colors duration-200"
         />
       </div>
 
+      {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold py-3 rounded-xl 
+                   shadow-md hover:shadow-lg hover:from-indigo-600 hover:to-purple-600 
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 transition-all duration-200"
       >
-        {type === "login" ? "Log In" : "Register"}
+        {type === "login" ? "Sign In" : "Create Account"}
       </button>
     </form>
   );

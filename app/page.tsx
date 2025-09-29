@@ -60,7 +60,6 @@ export default function Home() {
       author: "Ashar Khan",
       date: "Sept 27, 2025",
     },
-    // more posts...
   ];
   return (
     <div>

@@ -1,4 +1,3 @@
-// components/PostGrid.tsx
 "use client";
 import React from "react";
 import PostCard, { PostCardProps } from "./PostCard";

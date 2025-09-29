@@ -9,13 +9,13 @@ export default function RegisterPage() {
         type="register"
         onSubmit={(data:any) => {
           console.log("Register data:", data);
-          // TODO: integrate Firebase/Auth API
+          
         }}
       />
       <p className="mt-4 text-sm text-center text-gray-600">
         Already have an account?{" "}
         <a
-          href="/login"
+          href="/auth/login"
           className="text-blue-600 hover:underline font-medium"
         >
           Log In
