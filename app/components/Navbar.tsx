@@ -1,10 +1,12 @@
 // components/Navbar.tsx
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 
 export default function Navbar(): any {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -21,7 +23,10 @@ export default function Navbar(): any {
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo / Site Name */}
-        <div className="text-2xl font-bold text-gray-800 tracking-wide">
+        <div
+          onClick={() => router.push("/")}
+          className="text-2xl font-bold text-gray-800 tracking-wide cursor-pointer hover:text-blue-600 transition-colors"
+        >
           Blogging&nbsp;App
         </div>
 
@@ -69,12 +74,22 @@ export default function Navbar(): any {
                 <button
                   className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                   type="button"
+                  onClick={() => router.push("/profile")}
                 >
                   Profile
+                </button>
+
+                <button
+                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  type="button"
+                  onClick={() => router.push("/saved")}
+                >
+                  Saved
                 </button>
                 <button
                   className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                   type="button"
+                  onClick={() => router.push("/auth/login")}
                 >
                   Logout
                 </button>

@@ -35,24 +35,23 @@ export default function ProfileCard({
   };
 
   return (
-    <div className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-lg flex flex-col items-center">
-      <div className="relative w-40 h-40 rounded-lg overflow-hidden shadow-md">
-        {/* profile image */}
+    <div className="max-w-sm mx-auto p-6 bg-white rounded-2xl shadow-2xl flex flex-col items-center transition-transform hover:scale-[1.02]">
+      {/* Profile Image */}
+      <div className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full overflow-hidden shadow-lg border-4 border-gray-100">
         <img
           src={imageSrc}
           alt="profile"
           className="w-full h-full object-cover"
         />
 
-        {/* edit icon overlay */}
+        {/* Edit Icon */}
         <button
           onClick={handleImageClick}
           aria-label="Edit profile image"
-          className="absolute bottom-2 right-2 bg-gray-300 hover:bg-gray-300 
-             w-10 h-10 flex items-center justify-center rounded-full 
-             shadow-lg transition-transform transform hover:scale-105"
+          className="absolute bottom-2 right-2 bg-white hover:bg-gray-100 border shadow-md
+             w-10 h-10 flex items-center justify-center rounded-full transition-transform hover:scale-110"
         >
-          <FontAwesomeIcon icon={faPen} className="text-gray-700" />
+          <FontAwesomeIcon icon={faPen} className="text-gray-600" />
         </button>
 
         <input
@@ -64,19 +63,19 @@ export default function ProfileCard({
         />
       </div>
 
-      {/* name + edit */}
-      <div className="mt-4 w-full text-center">
+      {/* Name + Edit */}
+      <div className="mt-5 w-full text-center">
         {!editingName ? (
           <div className="flex items-center justify-center gap-3">
-            <h2 className="text-xl font-semibold text-gray-600">{name}</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">{name}</h2>
 
             <button
               onClick={() => setEditingName(true)}
               aria-label="Edit name"
-              className="bg-gray-300 hover:bg-gray-300 w-8 h-8 flex items-center 
-             justify-center rounded-full shadow-sm"
+              className="bg-white border hover:bg-gray-100 w-9 h-9 flex items-center 
+             justify-center rounded-full shadow-md"
             >
-              <FontAwesomeIcon icon={faPen} className="text-gray-700" />
+              <FontAwesomeIcon icon={faPen} className="text-gray-600" />
             </button>
           </div>
         ) : (
@@ -86,13 +85,14 @@ export default function ProfileCard({
             onChange={(e) => setName(e.target.value)}
             onBlur={finishEditingName}
             onKeyDown={handleNameKey}
-            className="w-full max-w-xs text-gray-600 mx-auto text-center border rounded-md px-3 py-2 focus:outline-none focus:ring"
+            className="w-full max-w-xs text-gray-700 text-center border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
         )}
       </div>
 
-      <p className="mt-3 text-sm text-gray-500">
-        Click the pen to edit image or name
+      {/* Info Text */}
+      <p className="mt-4 text-sm text-gray-500">
+        Click the pen to edit your profile
       </p>
     </div>
   );
