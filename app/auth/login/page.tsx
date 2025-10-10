@@ -1,17 +1,27 @@
-'use client'
+"use client";
 import AuthLayout from "../../components/AuthLayout";
 import AuthForm from "../../components/AuthForm";
+import { loginUser } from "../../../libs/api";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast"; 
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const handleLogin = async (data: any) => {
+    const res = await loginUser(data.email, data.password);
+
+    if (res.success) {
+      toast.success("Logged in successfully");
+      router.push("/");
+    } else {
+      toast.error(res.message || "Invalid credentials ❌");
+    }
+  };
+
   return (
     <AuthLayout title="Welcome Back">
-      <AuthForm
-        type="login"
-        onSubmit={(data:any) => {
-          console.log("Login data:", data);
-          // TODO: integrate Firebase/Auth API
-        }}
-      />
+      <AuthForm type="login" onSubmit={handleLogin} />
       <p className="mt-4 text-sm text-center text-gray-600">
         Don’t have an account?{" "}
         <a

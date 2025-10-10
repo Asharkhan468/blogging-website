@@ -2,12 +2,17 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { createPost } from "@/libs/api";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function CreatePostPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -27,17 +32,31 @@ export default function CreatePostPage() {
     setPreview(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ title, description, image });
-    alert("✅ Post Created Successfully!");
-  };
 
+    if (!title || !description || !image) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    const res = await createPost(title, description, image);
+
+    if (res.success) {
+      router.push("/");
+      toast.success("Post created successfully");
+      setTitle("");
+      setDescription("");
+      setImage(null);
+    } else {
+      toast.error(res.message || "Failed to create post ");
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-10">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800">
-         Create New Post
+          Create New Post
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
