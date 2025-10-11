@@ -113,36 +113,7 @@ export const fetchPosts = async () => {
   }
 };
 
-// export const likePost = async (postId, userId) => {
-//   try {
-//     const res = await fetch(`${BASE_URL}api/v1/${postId}/like`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization:
-//           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZTY2YWUwODUwMmY4MTdiNGVlOGU1YiIsImVtYWlsIjoiYXNoYXJAZ21haWwuY29tIiwiaWF0IjoxNzYwMTYyMzcwLCJleHAiOjE3NjAxNjU5NzB9.05HdkYYKitb5Gwu6xVziG9r9Lp-lNIgX8cAoLPMptHo",
-//       },
-//       body: JSON.stringify({ userId }),
-//     });
 
-//     const data = await res.json();
-
-//     if (!res.ok) {
-//       return { success: false, message: data.message || "Failed to like post" };
-//     }
-
-//     return {
-//       success: true,
-//       message: data.message || "Post liked successfully",
-//     };
-//   } catch (error) {
-//     console.error("Like post error:", error.message);
-//     return {
-//       success: false,
-//       message: "Something went wrong. Please try again.",
-//     };
-//   }
-// };
 
 export const likePost = async (postId) => {
   try {
