@@ -7,6 +7,7 @@ import {
   faBookmark,
 } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { likePost } from "@/libs/api";
 
 export interface PostCardProps {
   _id: string;
@@ -105,7 +106,7 @@ export default function PostCard({
 
           {/* Action Icons */}
           <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 text-gray-500">
-            <button className="flex items-center gap-1 hover:text-red-500 transition-colors">
+            <button onClick={()=>{likePost(_id )}} className="flex items-center gap-1 hover:text-red-500 transition-colors">
               <FontAwesomeIcon icon={faHeart} className="w-5 h-5" />
               <span className="text-sm">Like</span>
             </button>

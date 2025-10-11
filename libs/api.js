@@ -1,8 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-
-
-
 export const registerUser = async (email, password) => {
   try {
     const res = await fetch(`${BASE_URL}api/auth/register`, {
@@ -22,18 +19,20 @@ export const registerUser = async (email, password) => {
   } catch (error) {
     console.error("Login error:", error.message);
 
-    return { success: false, message: "Something went wrong. Please try again." };
+    return {
+      success: false,
+      message: "Something went wrong. Please try again.",
+    };
   }
 };
-
-
-
 
 export const loginUser = async (email, password) => {
   try {
     const res = await fetch(`${BASE_URL}api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
+
       body: JSON.stringify({ email, password }),
     });
 
@@ -49,11 +48,12 @@ export const loginUser = async (email, password) => {
   } catch (error) {
     console.error("Login error:", error.message);
 
-    return { success: false, message: "Something went wrong. Please try again." };
+    return {
+      success: false,
+      message: "Something went wrong. Please try again.",
+    };
   }
 };
-
-
 
 export const createPost = async (title, description, imageFile) => {
   try {
@@ -65,24 +65,28 @@ export const createPost = async (title, description, imageFile) => {
 
     const res = await fetch(`${BASE_URL}api/v1/create`, {
       method: "POST",
-      body: formData, 
+      body: formData,
     });
 
     const data = await res.json();
     console.log(data);
 
     if (!res.ok) {
-      return { success: false, message: data.message || "Failed to create post" };
+      return {
+        success: false,
+        message: data.message || "Failed to create post",
+      };
     }
 
     return { success: true, data };
   } catch (error) {
     console.error("Create post error:", error.message);
-    return { success: false, message: "Something went wrong. Please try again." };
+    return {
+      success: false,
+      message: "Something went wrong. Please try again.",
+    };
   }
 };
-
-
 
 export const fetchPosts = async () => {
   try {
@@ -93,12 +97,69 @@ export const fetchPosts = async () => {
     const data = await res.json();
 
     if (!res.ok) {
-      return { success: false, message: data.message || "Failed to fetch posts" };
+      return {
+        success: false,
+        message: data.message || "Failed to fetch posts",
+      };
     }
 
-    return { success: true, data: data.posts }; 
+    return { success: true, data: data.posts };
   } catch (error) {
     console.error("Fetch posts error:", error.message);
-    return { success: false, message: "Something went wrong. Please try again." };
+    return {
+      success: false,
+      message: "Something went wrong. Please try again.",
+    };
+  }
+};
+
+// export const likePost = async (postId, userId) => {
+//   try {
+//     const res = await fetch(`${BASE_URL}api/v1/${postId}/like`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization:
+//           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZTY2YWUwODUwMmY4MTdiNGVlOGU1YiIsImVtYWlsIjoiYXNoYXJAZ21haWwuY29tIiwiaWF0IjoxNzYwMTYyMzcwLCJleHAiOjE3NjAxNjU5NzB9.05HdkYYKitb5Gwu6xVziG9r9Lp-lNIgX8cAoLPMptHo",
+//       },
+//       body: JSON.stringify({ userId }),
+//     });
+
+//     const data = await res.json();
+
+//     if (!res.ok) {
+//       return { success: false, message: data.message || "Failed to like post" };
+//     }
+
+//     return {
+//       success: true,
+//       message: data.message || "Post liked successfully",
+//     };
+//   } catch (error) {
+//     console.error("Like post error:", error.message);
+//     return {
+//       success: false,
+//       message: "Something went wrong. Please try again.",
+//     };
+//   }
+// };
+
+export const likePost = async (postId) => {
+  try {
+    const res = await fetch(`${BASE_URL}api/v1/${postId}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    if (!res.ok) return { success: false, message: data.message };
+
+    return { success: true, message: data.message };
+  } catch (error) {
+    console.error("Like post error:", error.message);
+    return { success: false, message: "Something went wrong" };
   }
 };
