@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHeart,
@@ -8,6 +8,8 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { likePost } from "@/libs/api";
+import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 
 export interface PostCardProps {
   _id: string;
@@ -15,6 +17,7 @@ export interface PostCardProps {
   description: string;
   image: string;
   createdAt: string;
+  likes:any[];
 }
 
 interface Comment {
@@ -27,12 +30,36 @@ interface Comment {
 export default function PostCard({
   _id,
   title,
+  likes,
   description,
   image,
   createdAt,
 }: PostCardProps): any {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [comment, setComment] = useState("");
+  //  const [isLiked, setIsLiked] = useState();
+
+  const [isLiked, setIsLiked] = useState(false);
+
+
+  useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (!storedUser) return;
+
+  const currentUser = JSON.parse(storedUser);
+  // Agar post.likes me current user id hai to true set karo
+  if (likes?.includes(currentUser.id)) {
+    setIsLiked(true);
+  }
+}, [likes]);
+
+ const handleLike = async () => {
+  const res = await likePost(_id);
+  if (res.success) {
+    setIsLiked((prev) => !prev);
+  }
+};
+
   const [comments, setComments] = useState<Comment[]>([
     {
       id: 1,
@@ -106,10 +133,23 @@ export default function PostCard({
 
           {/* Action Icons */}
           <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 text-gray-500">
-            <button onClick={()=>{likePost(_id )}} className="flex items-center gap-1 hover:text-red-500 transition-colors">
+            {/* <button onClick={()=>{handleLike}} className="flex items-center gap-1 hover:text-red-500 transition-colors">
               <FontAwesomeIcon icon={faHeart} className="w-5 h-5" />
               <span className="text-sm">Like</span>
-            </button>
+            </button> */}
+
+            <button
+        onClick={handleLike}
+        className={`flex items-center gap-1 transition-colors ${
+          isLiked ? "text-red-500" : "hover:text-red-500"
+        }`}
+      >
+        <FontAwesomeIcon
+          icon={isLiked ? faHeartSolid : faHeartRegular}
+          className="w-5 h-5"
+        />
+        <span className="text-sm">{isLiked ? "Liked" : "Like"}</span>
+      </button>
 
             <button
               className="flex items-center gap-1 hover:text-blue-500 transition-colors"

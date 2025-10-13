@@ -26,13 +26,42 @@ export const registerUser = async (email, password) => {
   }
 };
 
+// export const loginUser = async (email, password) => {
+//   try {
+//     const res = await fetch(`${BASE_URL}api/auth/login`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       credentials: "include",
+
+//       body: JSON.stringify({ email, password }),
+//     });
+
+//     const data = await res.json();
+//     console.log(data);
+
+//     if (!res.ok) {
+//       return { success: false, message: data.message || "Login failed" };
+//     }
+
+//     // ✅ Return successful response
+//     return { success: true, data };
+//   } catch (error) {
+//     console.error("Login error:", error.message);
+
+//     return {
+//       success: false,
+//       message: "Something went wrong. Please try again.",
+//     };
+//   }
+// };
+
+
 export const loginUser = async (email, password) => {
   try {
     const res = await fetch(`${BASE_URL}api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-
       body: JSON.stringify({ email, password }),
     });
 
@@ -41,6 +70,11 @@ export const loginUser = async (email, password) => {
 
     if (!res.ok) {
       return { success: false, message: data.message || "Login failed" };
+    }
+
+    // ✅ Save user data in localStorage
+    if (data?.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
     }
 
     // ✅ Return successful response
@@ -57,11 +91,10 @@ export const loginUser = async (email, password) => {
 
 export const createPost = async (title, description, imageFile) => {
   try {
-    // 🧩 FormData use for sending text + image
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("image", imageFile); // 👈 image key must match backend field name
+    formData.append("image", imageFile); 
 
     const res = await fetch(`${BASE_URL}api/v1/create`, {
       method: "POST",
@@ -126,6 +159,7 @@ export const likePost = async (postId) => {
     });
 
     const data = await res.json();
+    console.log(data)
     if (!res.ok) return { success: false, message: data.message };
 
     return { success: true, message: data.message };
