@@ -2,14 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHeart,
   faComment,
   faBookmark,
 } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { likePost } from "@/libs/api";
+import { addComment, likePost, savePost } from "@/libs/api";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
+import toast from "react-hot-toast"; 
+
 
 export interface PostCardProps {
   _id: string;
@@ -17,7 +18,8 @@ export interface PostCardProps {
   description: string;
   image: string;
   createdAt: string;
-  likes:any[];
+  likes: any[];
+  comments: any[];
 }
 
 interface Comment {
@@ -34,66 +36,52 @@ export default function PostCard({
   description,
   image,
   createdAt,
+  comments,
 }: PostCardProps): any {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [comment, setComment] = useState("");
-  //  const [isLiked, setIsLiked] = useState();
 
   const [isLiked, setIsLiked] = useState(false);
-
+  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
-  const storedUser = localStorage.getItem("user");
-  if (!storedUser) return;
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) return;
 
-  const currentUser = JSON.parse(storedUser);
-  // Agar post.likes me current user id hai to true set karo
-  if (likes?.includes(currentUser.id)) {
-    setIsLiked(true);
-  }
-}, [likes]);
+    const currentUser = JSON.parse(storedUser);
+    // Agar post.likes me current user id hai to true set karo
+    if (likes?.includes(currentUser.id)) {
+      setIsLiked(true);
+    }
+  }, [likes]);
 
- const handleLike = async () => {
-  const res = await likePost(_id);
-  if (res.success) {
-    setIsLiked((prev) => !prev);
-  }
-};
+  const handleLike = async () => {
+    const res = await likePost(_id);
+    if (res.success) {
+      setIsLiked((prev) => !prev);
+    }
+  };
 
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: 1,
-      name: "Ali Khan",
-      avatar: "https://i.pravatar.cc/40?img=1",
-      text: "Great post! Keep it up 👏",
-    },
-    {
-      id: 2,
-      name: "Sara Ahmed",
-      avatar: "https://i.pravatar.cc/40?img=2",
-      text: "Very informative, thanks for sharing 💡",
-    },
-    {
-      id: 3,
-      name: "John Doe",
-      avatar: "https://i.pravatar.cc/40?img=3",
-      text: "Nice work 👍",
-    },
-  ]);
-
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!comment.trim()) return;
+    // if (!comment.trim()) return;
+    const response = await addComment(_id, commentText);
+    if (response.success) {
+      console.log("Comment added:", response.comments);
+      setCommentText("");
+    } else {
+      console.log("Error:", response.message);
+    }
+  };
 
-    const newComment: Comment = {
-      id: comments.length + 1,
-      name: "You",
-      avatar: "https://i.pravatar.cc/40?u=me",
-      text: comment,
-    };
-
-    setComments([newComment, ...comments]);
-    setComment("");
+  const handleSave = async () => {
+    const result = await savePost(_id);
+    if (result.success) {
+      console.log("✅", result.message);
+      toast.success(result.message)
+    } else {
+      console.log("❌", result.message);
+      toast.error(result.message)
+    }
   };
 
   return (
@@ -123,9 +111,6 @@ export default function PostCard({
 
           {/* Author & Date */}
           <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
-            {/* <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span className="font-medium">{author}</span>
-            </div> */}
             <span className="text-xs text-gray-400">
               {new Date(createdAt).toLocaleString()}
             </span>
@@ -133,23 +118,18 @@ export default function PostCard({
 
           {/* Action Icons */}
           <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 text-gray-500">
-            {/* <button onClick={()=>{handleLike}} className="flex items-center gap-1 hover:text-red-500 transition-colors">
-              <FontAwesomeIcon icon={faHeart} className="w-5 h-5" />
-              <span className="text-sm">Like</span>
-            </button> */}
-
             <button
-        onClick={handleLike}
-        className={`flex items-center gap-1 transition-colors ${
-          isLiked ? "text-red-500" : "hover:text-red-500"
-        }`}
-      >
-        <FontAwesomeIcon
-          icon={isLiked ? faHeartSolid : faHeartRegular}
-          className="w-5 h-5"
-        />
-        <span className="text-sm">{isLiked ? "Liked" : "Like"}</span>
-      </button>
+              onClick={handleLike}
+              className={`flex items-center gap-1 transition-colors ${
+                isLiked ? "text-red-500" : "hover:text-red-500"
+              }`}
+            >
+              <FontAwesomeIcon
+                icon={isLiked ? faHeartSolid : faHeartRegular}
+                className="w-5 h-5"
+              />
+              <span className="text-sm">{isLiked ? "Liked" : "Like"}</span>
+            </button>
 
             <button
               className="flex items-center gap-1 hover:text-blue-500 transition-colors"
@@ -159,7 +139,7 @@ export default function PostCard({
               <span className="text-sm">Comment</span>
             </button>
 
-            <button className="flex items-center gap-1 hover:text-yellow-500 transition-colors">
+            <button onClick={handleSave} className="flex items-center gap-1 hover:text-yellow-500 transition-colors">
               <FontAwesomeIcon icon={faBookmark} className="w-5 h-5" />
               <span className="text-sm">Save</span>
             </button>
@@ -187,8 +167,8 @@ export default function PostCard({
             {/* Comment Form */}
             <form onSubmit={handleCommentSubmit} className="space-y-3 mb-4">
               <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
                 placeholder="Write your comment..."
                 rows={3}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
@@ -207,16 +187,16 @@ export default function PostCard({
             <div className="overflow-y-auto space-y-4 pr-2 custom-scrollbar">
               {comments.map((c) => (
                 <div
-                  key={c.id}
+                  key={c._id}
                   className="flex items-start gap-3 bg-gray-50 rounded-lg p-3 shadow-sm"
                 >
                   <img
-                    src={c.avatar}
-                    alt={c.name}
+                    src={c.userImage}
+                    alt={c.userName}
                     className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
-                    <h4 className="font-medium text-gray-800">{c.name}</h4>
+                    <h4 className="font-medium text-gray-800">{c.userName}</h4>
                     <p className="text-sm text-gray-600">{c.text}</p>
                   </div>
                 </div>
