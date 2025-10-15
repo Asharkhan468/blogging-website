@@ -10,6 +10,8 @@ export default function Home() {
   const router = useRouter();
   const [post, setPost] = useState([]);
 
+  
+
   useEffect(() => {
     const getPosts = async () => {
       const result = await fetchPosts();

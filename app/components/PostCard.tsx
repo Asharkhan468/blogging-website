@@ -1,16 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faComment,
-  faBookmark,
-} from "@fortawesome/free-regular-svg-icons";
+import { faComment, faBookmark } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { addComment, likePost, savePost } from "@/libs/api";
+import { addComment, likePost, savePost, unsavePost } from "@/libs/api";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
-import toast from "react-hot-toast"; 
-
+import { faBookmark as faRegularBookmark } from "@fortawesome/free-regular-svg-icons";
+import { faBookmark as faSolidBookmark } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 
 export interface PostCardProps {
   _id: string;
@@ -42,13 +40,20 @@ export default function PostCard({
 
   const [isLiked, setIsLiked] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  const storedUser = localStorage.getItem("user");
+  const currentUser = JSON.parse(storedUser as any);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
     if (!storedUser) return;
+    if (currentUser.savedPosts?.includes(_id)) {
+      setIsSaved(true);
+    }
+  }, []);
 
-    const currentUser = JSON.parse(storedUser);
-    // Agar post.likes me current user id hai to true set karo
+  useEffect(() => {
+    if (!storedUser) return;
     if (likes?.includes(currentUser.id)) {
       setIsLiked(true);
     }
@@ -74,16 +79,24 @@ export default function PostCard({
   };
 
   const handleSave = async () => {
-    const result = await savePost(_id);
-    if (result.success) {
-      console.log("✅", result.message);
-      toast.success(result.message)
+    if (isSaved) {
+      const result = await unsavePost(_id);
+      if (result.success) {
+        setIsSaved(false);
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
     } else {
-      console.log("❌", result.message);
-      toast.error(result.message)
+      const result = await savePost(_id);
+      if (result.success) {
+        setIsSaved(true);
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
     }
   };
-
   return (
     <>
       {/* Post Card */}
@@ -139,9 +152,19 @@ export default function PostCard({
               <span className="text-sm">Comment</span>
             </button>
 
-            <button onClick={handleSave} className="flex items-center gap-1 hover:text-yellow-500 transition-colors">
-              <FontAwesomeIcon icon={faBookmark} className="w-5 h-5" />
-              <span className="text-sm">Save</span>
+            <button
+              onClick={handleSave}
+              className={`flex items-center gap-1 transition-colors ${
+                isSaved
+                  ? "text-yellow-500"
+                  : "hover:text-yellow-500 text-gray-500"
+              }`}
+            >
+              <FontAwesomeIcon
+                icon={isSaved ? faSolidBookmark : faRegularBookmark}
+                className="w-5 h-5"
+              />
+              <span className="text-sm">{isSaved ? "Saved" : "Save"}</span>
             </button>
           </div>
         </div>

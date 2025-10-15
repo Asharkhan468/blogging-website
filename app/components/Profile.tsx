@@ -3,18 +3,12 @@ import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 
-type Props = {
-  initialName?: string;
-  initialImage?: string;
-};
-
-export default function ProfileCard({
-  initialName = "Ashar Khan",
-  initialImage = "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png",
-}: Props) {
-  const [name, setName] = useState(initialName);
+export default function ProfileCard() {
+  const storedUser = localStorage.getItem("user");
+  const currentUser = JSON.parse(storedUser as any);
+  const [name, setName] = useState(currentUser.name);
   const [editingName, setEditingName] = useState(false);
-  const [imageSrc, setImageSrc] = useState(initialImage);
+  const [imageSrc, setImageSrc] = useState(currentUser.profileImage);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleImageClick = () => fileInputRef.current?.click();
@@ -67,7 +61,9 @@ export default function ProfileCard({
       <div className="mt-5 w-full text-center">
         {!editingName ? (
           <div className="flex items-center justify-center gap-3">
-            <h2 className="text-2xl font-semibold text-gray-800">{name}</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {currentUser.name}
+            </h2>
 
             <button
               onClick={() => setEditingName(true)}

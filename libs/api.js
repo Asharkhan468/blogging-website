@@ -26,7 +26,6 @@ export const registerUser = async (email, password) => {
   }
 };
 
-
 export const loginUser = async (email, password) => {
   try {
     const res = await fetch(`${BASE_URL}api/auth/login`, {
@@ -157,42 +156,13 @@ export const addComment = async (postId, text) => {
     return {
       success: true,
       message: data.message,
-      comments: data.comments, 
+      comments: data.comments,
     };
   } catch (error) {
     console.error("Add comment error:", error.message);
     return { success: false, message: "Something went wrong" };
   }
 };
-
-
-// export const savePost = async (postId, userId) => {
-//   try {
-//     const res = await fetch(`${BASE_URL}api/v1/save/${postId}`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       credentials: "include",
-//       body: JSON.stringify({ userId }),
-//     });
-
-//     const data = await res.json();
-
-//     if (!res.ok) {
-//       return { success: false, message: data.message };
-//     }
-
-//     return {
-//       success: true,
-//       message: data.message,
-//     };
-//   } catch (error) {
-//     console.error("Save post error:", error.message);
-//     return { success: false, message: "Something went wrong" };
-//   }
-// };
-
 
 export const savePost = async (postId) => {
   try {
@@ -226,6 +196,78 @@ export const savePost = async (postId) => {
     };
   } catch (error) {
     console.error("Save post error:", error.message);
+    return { success: false, message: "Something went wrong" };
+  }
+};
+
+export const unsavePost = async (postId) => {
+  try {
+    // 🔹 Get user from localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id; // ya user?.id depending on structure
+
+    if (!userId) {
+      return { success: false, message: "User not found in local storage" };
+    }
+
+    // 🔹 API request
+    const res = await fetch(`${BASE_URL}api/v1/unsave/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ userId }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message };
+    }
+
+    return {
+      success: true,
+      message: data.message,
+    };
+  } catch (error) {
+    console.error("Save post error:", error.message);
+    return { success: false, message: "Something went wrong" };
+  }
+};
+
+export const updateUserProfile = async (userId, name, profileImageFile) => {
+  try {
+    if (!userId) {
+      return { success: false, message: "User ID is required" };
+    }
+    const formData = new FormData();
+    if (name) formData.append("name", name);
+    if (profileImageFile) formData.append("profileImage", profileImageFile);
+
+    const res = await fetch(`${BASE_URL}api/v1/updateProfile/${userId}`, {
+      method: "PUT",
+      credentials: "include",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message };
+    }
+
+    if (data.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+
+    return {
+      success: true,
+      message: data.message,
+      user: data.user,
+    };
+  } catch (error) {
+    console.error("Profile update error:", error.message);
     return { success: false, message: "Something went wrong" };
   }
 };
