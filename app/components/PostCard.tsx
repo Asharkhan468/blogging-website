@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faBookmark } from "@fortawesome/free-regular-svg-icons";
+import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { addComment, likePost, savePost, unsavePost } from "@/libs/api";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";

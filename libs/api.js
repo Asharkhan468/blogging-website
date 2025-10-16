@@ -41,12 +41,10 @@ export const loginUser = async (email, password) => {
       return { success: false, message: data.message || "Login failed" };
     }
 
-    // ✅ Save user data in localStorage
     if (data?.user) {
       localStorage.setItem("user", JSON.stringify(data.user));
     }
 
-    // ✅ Return successful response
     return { success: true, data };
   } catch (error) {
     console.error("Login error:", error.message);
@@ -258,7 +256,14 @@ export const updateUserProfile = async (userId, name, profileImageFile) => {
     }
 
     if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
+      const localUser = {
+        email: data.user.email,
+        id: data.user._id,
+        name: data.user.name,
+        profileImage: data.user.profileImage,
+        savedPost: data.user.savedPosts,
+      };
+      localStorage.setItem("user", JSON.stringify(localUser));
     }
 
     return {
