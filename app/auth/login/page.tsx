@@ -13,6 +13,7 @@ export default function LoginPage() {
 
     if (res.success) {
       toast.success("Logged in successfully");
+      window.dispatchEvent(new Event("storage")); 
       router.push("/");
     } else {
       toast.error(res.message || "Invalid credentials ❌");

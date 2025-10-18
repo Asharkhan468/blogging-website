@@ -10,8 +10,6 @@ export default function Home() {
   const router = useRouter();
   const [post, setPost] = useState([]);
 
-  
-
   useEffect(() => {
     const getPosts = async () => {
       const result = await fetchPosts();
@@ -27,7 +25,13 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen">
-      <PostGrid posts={post} />
+      {post.length > 0 ? (
+        <PostGrid posts={post} />
+      ) : (
+        <div className="flex justify-center items-center h-[60vh]">
+          <p className="text-gray-500 text-lg font-medium">No posts found</p>
+        </div>
+      )}
 
       {/* Floating Add Button with Text */}
       <button

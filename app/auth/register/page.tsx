@@ -1,10 +1,9 @@
-'use client'
+"use client";
 import AuthLayout from "../../components/AuthLayout";
 import AuthForm from "../../components/AuthForm";
 import { useRouter } from "next/navigation";
 import { registerUser } from "@/libs/api";
-import toast from "react-hot-toast"; 
-
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -13,9 +12,10 @@ export default function RegisterPage() {
 
     if (res.success) {
       toast.success("Registered successfully");
+      window.dispatchEvent(new Event("storage"));
       router.push("/");
     } else {
-      toast.error(res.message );
+      toast.error(res.message);
     }
   };
 
@@ -23,10 +23,9 @@ export default function RegisterPage() {
     <AuthLayout title="Create an Account">
       <AuthForm
         type="register"
-        onSubmit={(data:any) => {
+        onSubmit={(data: any) => {
           console.log("Register data:", data);
-          handleRegister(data)
-          
+          handleRegister(data);
         }}
       />
       <p className="mt-4 text-sm text-center text-gray-600">

@@ -14,7 +14,9 @@ export const registerUser = async (email, password) => {
     if (!res.ok) {
       return { success: false, message: data.message || "Registration failed" };
     }
-
+if (data?.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
     return { success: true, data };
   } catch (error) {
     console.error("Login error:", error.message);
@@ -274,5 +276,62 @@ export const updateUserProfile = async (userId, name, profileImageFile) => {
   } catch (error) {
     console.error("Profile update error:", error.message);
     return { success: false, message: "Something went wrong" };
+  }
+};
+
+export const getSavedPost = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id;
+
+    if (!userId) {
+      return { success: false, message: "User not found in local storage" };
+    }
+
+    // 🔹 API request
+    const res = await fetch(`${BASE_URL}api/v1/saved/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { success: false, message: data.message };
+    }
+    // 🔹 Return saved posts
+    return {
+      success: true,
+      message: "Saved posts fetched successfully",
+      posts: data,
+    };
+  } catch (error) {
+    console.error("Get saved posts error:", error.message);
+    return { success: false, message: "Something went wrong" };
+  }
+};
+
+
+export const logoutUser = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}api/auth/logout`, {
+      method: "POST",
+      credentials: "include", // required for cookie
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Logout failed" };
+    }
+
+    // localStorage clear
+    localStorage.removeItem("user");
+
+    return { success: true, message: data.message };
+  } catch (error) {
+    console.error("Logout error:", error.message);
+    return { success: false, message: "Something went wrong. Please try again." };
   }
 };

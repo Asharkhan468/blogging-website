@@ -1,58 +1,31 @@
-'use client'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+"use client";
 import { useRouter } from "next/navigation";
 import PostGrid from "../components/PostGrid";
+import { useEffect, useState } from "react";
+import { getSavedPost } from "@/libs/api";
 
 export default function Home() {
   const router = useRouter();
-  const demoPosts = [
-    {
-      id: "1",
-      title: "Getting Started with Next.js",
-      excerpt: "Learn how to build blazing-fast web apps with Next.js...",
-      imageUrl:
-        "https://tse3.mm.bing.net/th/id/OIP.tykIp1IgQNMDSuEtPJWRgAHaE8?pid=Api&P=0&h=220",
-      author: "Ashar Khan",
-      date: "Sept 27, 2025",
-    },
-    {
-      id: "2",
-      title: "Getting Started with Next.js",
-      excerpt: "Learn how to build blazing-fast web apps with Next.js...",
-      imageUrl:
-        "https://tse3.mm.bing.net/th/id/OIP.tykIp1IgQNMDSuEtPJWRgAHaE8?pid=Api&P=0&h=220",
-      author: "Ashar Khan",
-      date: "Sept 27, 2025",
-    },
-    {
-      id: "3",
-      title: "Getting Started with Next.js",
-      excerpt: "Learn how to build blazing-fast web apps with Next.js...",
-      imageUrl:
-        "https://tse3.mm.bing.net/th/id/OIP.tykIp1IgQNMDSuEtPJWRgAHaE8?pid=Api&P=0&h=220",
-      author: "Ashar Khan",
-      date: "Sept 27, 2025",
-    },
-    
-  ];
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await getSavedPost();
+      console.log(response)
+      if (response.success) setPosts(response.posts);
+    };
+    fetchPosts();
+  }, []);
 
   return (
-    // <div className="relative min-h-screen">
-    //   <PostGrid posts={demoPosts} />
-
-     
-    // </div>
     <div className="relative min-h-screen bg-gray-50">
       {/* Page Heading */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-6 tracking-wide">
           Saved Posts
         </h1>
-
-        {/* Saved Posts List */}
-        {demoPosts && demoPosts.length > 0 ? (
-          <PostGrid posts={demoPosts} />
+        {posts && posts.length > 0 ? (
+          <PostGrid posts={posts} />
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-gray-500">
             <p className="text-lg">No saved posts yet.</p>
