@@ -1,20 +1,29 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { updateUserProfile } from "@/libs/api";
 import toast from "react-hot-toast";
 
 export default function Profile() {
-  const storedUser = localStorage.getItem("user");
-  const currentUser = storedUser ? JSON.parse(storedUser) : null;
-
-  const [name, setName] = useState(currentUser?.name || "");
-  const [imageSrc, setImageSrc] = useState(currentUser?.profileImage || "");
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [name, setName] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [editingName, setEditingName] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // ✅ Access localStorage only on client-side
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser);
+      setCurrentUser(parsed);
+      setName(parsed.name || "");
+      setImageSrc(parsed.profileImage || "");
+    }
+  }, []);
 
   const handleImageClick = () => fileInputRef.current?.click();
 
