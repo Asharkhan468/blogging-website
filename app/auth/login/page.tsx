@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  alert(document.cookie)
+
 
   const handleLogin = async (data: any) => {
     const res = await loginUser(data.email, data.password);

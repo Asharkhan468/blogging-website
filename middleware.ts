@@ -37,9 +37,7 @@ export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
-  console.log("Token in Middleware:", token);
-  console.log("Current Path:", pathname);
-
+ 
   // Public routes allow
   if (
     pathname.startsWith("/auth/login") ||
