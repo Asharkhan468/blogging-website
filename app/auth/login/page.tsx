@@ -3,19 +3,16 @@ import AuthLayout from "../../components/AuthLayout";
 import AuthForm from "../../components/AuthForm";
 import { loginUser } from "../../../libs/api";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast"; 
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
-  alert(document.cookie)
-
-
   const handleLogin = async (data: any) => {
     const res = await loginUser(data.email, data.password);
 
     if (res.success) {
       toast.success("Logged in successfully");
-      window.dispatchEvent(new Event("storage")); 
+      window.dispatchEvent(new Event("storage"));
       router.push("/");
     } else {
       toast.error(res.message || "Invalid credentials ❌");
