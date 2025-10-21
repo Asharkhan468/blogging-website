@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
+  console.log("Token:", token);
   const { pathname } = req.nextUrl;
 
   // Allow public routes (like login and register)
