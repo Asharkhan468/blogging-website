@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const BASE_URL = 'https://blogging-website-server-rose.vercel.app/';
 
 export const registerUser = async (email, password) => {
   try {
