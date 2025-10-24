@@ -34,7 +34,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
+  // const token = req.cookies.get("token")?.value;
+    const cookieHeader = req.headers.get("cookie");
+  const token =
+    req.cookies.get("token")?.value ||
+    (cookieHeader
+      ? cookieHeader.split("; ").find((c) => c.startsWith("token="))?.split("=")[1]
+      : null);
   const { pathname } = req.nextUrl;
 
  
