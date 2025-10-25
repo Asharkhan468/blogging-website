@@ -22,7 +22,7 @@ export function middleware(req: NextRequest) {
   ) {
     return NextResponse.next();
   }
-  console.log("Token in middleware:", req.cookies.get("token"));
+  console.log("Token test in middleware:", req.cookies.get("token"));
 
   // If no token -> redirect to login
   if (!token) {
