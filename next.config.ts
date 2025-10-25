@@ -14,7 +14,11 @@ const nextConfig = {
         source: "/server/:path*", // proxy path
         destination: "https://blogging-website-server-rose.vercel.app/:path*", // 👈 ye add zaroor karo
       },
+
+      
     ];
+
+    
   },
 };
 
