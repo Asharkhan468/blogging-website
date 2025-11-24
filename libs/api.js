@@ -46,6 +46,7 @@ export const loginUser = async (email, password) => {
 
     if (data?.user) {
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", JSON.stringify(data.user.token));
     }
 
     return { success: true, data };
@@ -329,7 +330,8 @@ export const logoutUser = async () => {
 
     // localStorage clear
     localStorage.removeItem("user");
-
+    localStorage.removeItem("token");
+    
     return { success: true, message: data.message };
   } catch (error) {
     console.error("Logout error:", error.message);
